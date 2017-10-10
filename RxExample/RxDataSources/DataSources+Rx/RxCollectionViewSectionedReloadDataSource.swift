@@ -16,7 +16,7 @@ import RxCocoa
 open class RxCollectionViewSectionedReloadDataSource<S: SectionModelType>
     : CollectionViewSectionedDataSource<S>
     , RxCollectionViewDataSourceType {
-    
+
     public typealias Element = [S]
 
     public override init() {
@@ -25,7 +25,7 @@ open class RxCollectionViewSectionedReloadDataSource<S: SectionModelType>
 
     open func collectionView(_ collectionView: UICollectionView, observedEvent: Event<Element>) {
         UIBindingObserver(UIElement: self) { dataSource, element in
-            #if DEBUG
+            #if DIALOG_RX_DEBUG
                 self._dataSourceBound = true
             #endif
             dataSource.setSections(element)

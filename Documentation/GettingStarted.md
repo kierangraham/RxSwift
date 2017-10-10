@@ -1131,7 +1131,7 @@ public struct Logging {
     public typealias LogURLRequest = (URLRequest) -> Bool
 
     public static var URLRequests: LogURLRequest =  { _ in
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         return true
     #else
         return false

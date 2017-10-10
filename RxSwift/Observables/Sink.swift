@@ -11,7 +11,7 @@ class Sink<O : ObserverType> : Disposable {
     fileprivate let _cancel: Cancelable
     fileprivate var _disposed: Bool
 
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         fileprivate let _synchronizationTracker = SynchronizationTracker()
     #endif
 
@@ -23,9 +23,9 @@ class Sink<O : ObserverType> : Disposable {
         _cancel = cancel
         _disposed = false
     }
-    
+
     final func forwardOn(_ event: Event<O.E>) {
-        #if DEBUG
+        #if DIALOG_RX_DEBUG
             _synchronizationTracker.register(synchronizationErrorMessage: .default)
             defer { _synchronizationTracker.unregister() }
         #endif
@@ -34,7 +34,7 @@ class Sink<O : ObserverType> : Disposable {
         }
         _observer.on(event)
     }
-    
+
     final func forwarder() -> SinkForward<O> {
         return SinkForward(forward: self)
     }
@@ -57,13 +57,13 @@ class Sink<O : ObserverType> : Disposable {
 
 final class SinkForward<O: ObserverType>: ObserverType {
     typealias E = O.E
-    
+
     private let _forward: Sink<O>
-    
+
     init(forward: Sink<O>) {
         _forward = forward
     }
-    
+
     final func on(_ event: Event<E>) {
         switch event {
         case .next:

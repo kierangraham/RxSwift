@@ -21,7 +21,7 @@ extension ObservableType {
         return self.subscribeSafe(observer)
     }
 
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         /**
         Subscribes an element handler, an error handler, a completion handler and disposed handler to an observable sequence.
 
@@ -44,12 +44,12 @@ extension ObservableType {
                 disposable = Disposables.create()
             }
 
-            #if DEBUG
+            #if DIALOG_RX_DEBUG
                 let _synchronizationTracker = SynchronizationTracker()
             #endif
 
             let observer = AnonymousObserver<E> { e in
-                #if DEBUG
+                #if DIALOG_RX_DEBUG
                     _synchronizationTracker.register(synchronizationErrorMessage: .default)
                     defer { _synchronizationTracker.unregister() }
                 #endif

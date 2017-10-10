@@ -44,7 +44,7 @@ static int32_t numberOfForwardedMethods = 0;
 #endif
 
 #define THREADING_HAZARD(class) \
-    NSLog(@"There was a problem swizzling on `%@`.\nYou have probably two libraries performing swizzling in runtime.\nWe didn't want to crash your program, but this is not good ...\nYou an solve this problem by either not using swizzling in this library, removing one of those other libraries, or making sure that swizzling parts are synchronized (only perform them on main thread).\nAnd yes, this message will self destruct when you clear the console, and since it's non deterministic, the problem could still exist and it will be hard for you to reproduce it.", NSStringFromClass(class)); ABORT_IN_DEBUG if (RXAbortOnThreadingHazard) { abort(); }
+    NSLog(@"There was a problem swizzling on `%@`.\nYou have probably two libraries performing swizzling in runtime.\nWe didn't want to crash your program, but this is not good ...\nYou an solve this problem by either not using swizzling in this library, removing one of those other libraries, or making sure that swizzling parts are synchronized (only perform them on main thread).\nAnd yes, this message will self destruct when you clear the console, and since it's non deterministic, the problem could still exist and it will be hard for you to reproduce it.", NSStringFromClass(class)); ABORT_IN_DIALOG_RX_DEBUG if (RXAbortOnThreadingHazard) { abort(); }
 
 #define ALWAYS(condition, message) if (!(condition)) { [NSException raise:@"RX Invalid Operator" format:@"%@", message]; }
 #define ALWAYS_WITH_INFO(condition, message) NSAssert((condition), @"%@ [%@] > %@", NSStringFromClass(class), NSStringFromSelector(selector), (message))
@@ -138,7 +138,7 @@ BOOL RX_is_method_with_description_void(struct objc_method_description method) {
 
 id __nonnull RX_extract_argument_at_index(NSInvocation * __nonnull invocation, NSUInteger index) {
     const char *argumentType = [invocation.methodSignature getArgumentTypeAtIndex:index];
-    
+
 #define RETURN_VALUE(type) \
     else if (strcmp(argumentType, @encode(type)) == 0) {\
         type val = 0; \
@@ -150,7 +150,7 @@ id __nonnull RX_extract_argument_at_index(NSInvocation * __nonnull invocation, N
     if (argumentType[0] == 'r') {
         argumentType++;
     }
-    
+
     if (strcmp(argumentType, @encode(id)) == 0
         || strcmp(argumentType, @encode(Class)) == 0
         || strcmp(argumentType, @encode(void (^)())) == 0
@@ -179,7 +179,7 @@ id __nonnull RX_extract_argument_at_index(NSInvocation * __nonnull invocation, N
         NSCParameterAssert(size > 0);
         uint8_t data[size];
         [invocation getArgument:&data atIndex:index];
-        
+
         return [NSValue valueWithBytes:&data objCType:argumentType];
     }
 }
@@ -187,15 +187,15 @@ id __nonnull RX_extract_argument_at_index(NSInvocation * __nonnull invocation, N
 NSArray *RX_extract_arguments(NSInvocation *invocation) {
     NSUInteger numberOfArguments = invocation.methodSignature.numberOfArguments;
     NSUInteger numberOfVisibleArguments = numberOfArguments - HIDDEN_ARGUMENT_COUNT;
-    
+
     NSCParameterAssert(numberOfVisibleArguments >= 0);
-    
+
     NSMutableArray *arguments = [NSMutableArray arrayWithCapacity:numberOfVisibleArguments];
-    
+
     for (NSUInteger index = HIDDEN_ARGUMENT_COUNT; index < numberOfArguments; ++index) {
         [arguments addObject:RX_extract_argument_at_index(invocation, index) ?: [NSNull null]];
     }
-    
+
     return arguments;
 }
 
@@ -578,7 +578,7 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     pthread_mutexattr_settype(&lock_attr, PTHREAD_MUTEX_RECURSIVE);
     pthread_mutex_init(&_lock, &lock_attr);
     pthread_mutexattr_destroy(&lock_attr);
-    
+
     return self;
 }
 
@@ -725,15 +725,15 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
     /**
      If the object is reporting a different class then what it's real class, that means that there is probably
      already some interception mechanism in place or something weird is happening.
-     
+
      Most common case when this would happen is when using KVO (`observe`) and `sentMessage`.
 
      This error is easily resolved by just using `sentMessage` observing before `observe`.
-     
-     The reason why other way around could create issues is because KVO will unregister it's interceptor 
+
+     The reason why other way around could create issues is because KVO will unregister it's interceptor
      class and restore original class. Unfortunately that will happen no matter was there another interceptor
      subclass registered in hierarchy or not.
-     
+
      Failure scenario:
      * KVO sets class to be `__KVO__OriginalClass` (subclass of `OriginalClass`)
      * `sentMessage` sets object class to be `_RX_namespace___KVO__OriginalClass` (subclass of `__KVO__OriginalClass`)
@@ -742,7 +742,7 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
      The reason why changing order of observing works is because any interception method should return
      object's original real class (if that doesn't happen then it's really easy to argue that's a bug
      in that other library).
-     
+
      This library won't remove registered interceptor even if there aren't any observers left because
      it's highly unlikely it would have any benefit in real world use cases, and it's even more
      dangerous.
@@ -848,12 +848,12 @@ static NSMutableDictionary<NSString *, RXInterceptWithOptimizedObserver> *optimi
 /**
  If object don't have some weird behavior, claims it's the same class that runtime shows,
  then dynamic subclass is created (only this instance will have performance hit).
- 
+
  In case something weird is detected, then original base class is being swizzled and all instances
  will have somewhat reduced performance.
- 
+
  This is especially handy optimization for weak KVO. Nobody will swizzle for example `NSString`,
- but to know when instance of a `NSString` was deallocated, performance hit will be only felt on a 
+ but to know when instance of a `NSString` was deallocated, performance hit will be only felt on a
  single instance of `NSString`, not all instances of `NSString`s.
  */
 -(Class __nullable)ensureHasDynamicFakeSubclass:(Class __nonnull)class error:(NSError **)error {
@@ -933,7 +933,7 @@ replacementImplementationGenerator:(IMP (^)(IMP originalImplementation))replacem
 #if TRACE_RESOURCES
     OSAtomicIncrement32Barrier(&numberOInterceptedMethods);
 #endif
-    
+
     DLOG(@"Rx is swizzling `%@` for `%@`", NSStringFromSelector(selector), class);
 
     Method existingMethod = class_getInstanceMethod(class, selector);

@@ -66,7 +66,7 @@ extension RxCocoaError {
 
 func bindingErrorToInterface(_ error: Swift.Error) {
     let error = "Binding error to UI: \(error)"
-#if DEBUG
+#if DIALOG_RX_DEBUG
     rxFatalError(error)
 #else
     print(error)
@@ -84,7 +84,7 @@ func rxFatalError(_ lastMessage: @autoclosure () -> String, file: StaticString =
 }
 
 func rxFatalErrorInDebug(_ lastMessage: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) {
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         fatalError(lastMessage(), file: file, line: line)
     #else
         print("\(file):\(line): \(lastMessage())")
@@ -127,7 +127,7 @@ func castOrFatalError<T>(_ value: AnyObject!, message: String) -> T {
     guard let result = maybeResult else {
         rxFatalError(message)
     }
-    
+
     return result
 }
 
@@ -136,7 +136,7 @@ func castOrFatalError<T>(_ value: Any!) -> T {
     guard let result = maybeResult else {
         rxFatalError("Failure converting from \(value) to \(T.self)")
     }
-    
+
     return result
 }
 

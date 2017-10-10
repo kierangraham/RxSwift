@@ -21,10 +21,10 @@
 #   define DLOG(...)
 #endif
 
-#if        DEBUG
-#   define ABORT_IN_DEBUG    abort();
+#if        DIALOG_RX_DEBUG
+#   define ABORT_IN_DIALOG_RX_DEBUG    abort();
 #else
-#   define ABORT_IN_DEBUG
+#   define ABORT_IN_DIALOG_RX_DEBUG
 #endif
 
 

@@ -14,9 +14,9 @@ import RxSwift
 
 class RxTarget : NSObject
                , Disposable {
-    
+
     private var retainSelf: RxTarget?
-    
+
     override init() {
         super.init()
         self.retainSelf = self
@@ -25,13 +25,13 @@ class RxTarget : NSObject
         _ = Resources.incrementTotal()
 #endif
 
-#if DEBUG
+#if DIALOG_RX_DEBUG
         MainScheduler.ensureExecutingOnScheduler()
 #endif
     }
-    
+
     func dispose() {
-#if DEBUG
+#if DIALOG_RX_DEBUG
         MainScheduler.ensureExecutingOnScheduler()
 #endif
         self.retainSelf = nil

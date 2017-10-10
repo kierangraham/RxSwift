@@ -29,7 +29,7 @@ final fileprivate class AnonymousObservableSink<O: ObserverType> : Sink<O>, Obse
     // state
     private var _isStopped: AtomicInt = 0
 
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         fileprivate let _synchronizationTracker = SynchronizationTracker()
     #endif
 
@@ -38,7 +38,7 @@ final fileprivate class AnonymousObservableSink<O: ObserverType> : Sink<O>, Obse
     }
 
     func on(_ event: Event<E>) {
-        #if DEBUG
+        #if DIALOG_RX_DEBUG
             _synchronizationTracker.register(synchronizationErrorMessage: .default)
             defer { _synchronizationTracker.unregister() }
         #endif

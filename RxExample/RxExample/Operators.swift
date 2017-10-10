@@ -52,8 +52,8 @@ func <-> <Base: UITextInput>(textInput: TextInput<Base>, variable: Variable<Stri
             /**
              In some cases `textInput.textRangeFromPosition(start, toPosition: end)` will return nil even though the underlying
              value is not nil. This appears to be an Apple bug. If it's not, and we are doing something wrong, please let us know.
-             The can be reproed easily if replace bottom code with 
-             
+             The can be reproed easily if replace bottom code with
+
              if nonMarkedTextValue != variable.value {
                 variable.value = nonMarkedTextValue ?? ""
              }
@@ -72,7 +72,7 @@ func <-> <Base: UITextInput>(textInput: TextInput<Base>, variable: Variable<Stri
 
 func <-> <T>(property: ControlProperty<T>, variable: Variable<T>) -> Disposable {
     if T.self == String.self {
-#if DEBUG
+#if DIALOG_RX_DEBUG
         fatalError("It is ok to delete this message, but this is here to warn that you are maybe trying to bind to some `rx.text` property directly to variable.\n" +
             "That will usually work ok, but for some languages that use IME, that simplistic method could cause unexpected issues because it will return intermediate results while text is being inputed.\n" +
             "REMEDY: Just use `textField <-> variable` instead of `textField.rx.text <-> variable`.\n" +

@@ -19,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             UIView.setAnimationsEnabled(false)
         }
 
-        #if DEBUG
+        #if DIALOG_RX_DEBUG
         _ = Observable<Int>.interval(1, scheduler: MainScheduler.instance)
             .subscribe(onNext: { _ in
                 print("Resource count \(RxSwift.Resources.total)")

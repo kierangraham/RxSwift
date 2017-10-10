@@ -34,7 +34,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
             [selectors addObject:SEL_VALUE(method.name)];
         }
     }
-            
+
     free(pMethods);
 
     unsigned int numberOfBaseProtocols = 0;
@@ -43,7 +43,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
     for (unsigned int i = 0; i < numberOfBaseProtocols; ++i) {
         [selectors unionSet:[self collectVoidSelectorsForProtocol:pSubprotocols[i]]];
     }
-    
+
     free(pSubprotocols);
 
     return selectors;
@@ -68,22 +68,22 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
         ) {
             unsigned int count;
             Protocol *__unsafe_unretained *pProtocols = class_copyProtocolList(targetClass, &count);
-            
+
             for (unsigned int i = 0; i < count; i++) {
                 NSSet *selectorsForProtocol = [self collectVoidSelectorsForProtocol:pProtocols[i]];
                 [voidSelectors unionSet:selectorsForProtocol];
             }
-            
+
             free(pProtocols);
         }
 
         if (classHierarchyDepth == CLASS_HIERARCHY_MAX_DEPTH) {
             NSLog(@"Detected weird class hierarchy with depth over %d. Starting with this class -> %@", CLASS_HIERARCHY_MAX_DEPTH, self);
-#if DEBUG
+#if DIALOG_RX_DEBUG
             abort();
 #endif
         }
-        
+
         voidSelectorsPerClass[CLASS_VALUE(self)] = voidSelectors;
     }
 }
@@ -121,7 +121,7 @@ static NSMutableDictionary *voidSelectorsPerClass = nil;
         arguments = RX_extract_arguments(anInvocation);
         [self _sentMessage:anInvocation.selector withArguments:arguments];
     }
-    
+
     if (self._forwardToDelegate && [self._forwardToDelegate respondsToSelector:anInvocation.selector]) {
         [anInvocation invokeWithTarget:self._forwardToDelegate];
     }

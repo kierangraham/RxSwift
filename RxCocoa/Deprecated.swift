@@ -57,7 +57,7 @@ extension ObservableType {
                 variable.value = element
             case let .error(error):
                 let error = "Binding error to variable: \(error)"
-                #if DEBUG
+                #if DIALOG_RX_DEBUG
                     rxFatalError(error)
                 #else
                     print(error)
@@ -124,7 +124,7 @@ extension ObservableType {
     public func bindNext(_ onNext: @escaping (E) -> Void) -> Disposable {
         return subscribe(onNext: onNext, onError: { error in
             let error = "Binding error: \(error)"
-            #if DEBUG
+            #if DIALOG_RX_DEBUG
                 rxFatalError(error)
             #else
                 print(error)

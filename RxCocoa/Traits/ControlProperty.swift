@@ -19,7 +19,7 @@ public protocol ControlPropertyType : ObservableType, ObserverType {
 
 /**
     Trait for `Observable`/`ObservableType` that represents property of UI element.
- 
+
     Sequence of values only represents initial control value and user initiated value changes.
     Programatic value changes won't be reported.
 
@@ -97,7 +97,7 @@ public struct ControlProperty<PropertyType> : ControlPropertyType {
     /// Binds event to user interface.
     ///
     /// - In case next element is received, it is being set to control value.
-    /// - In case error is received, DEBUG buids raise fatal error, RELEASE builds log event to standard output.
+    /// - In case error is received, DIALOG_RX_DEBUG buids raise fatal error, RELEASE builds log event to standard output.
     /// - In case sequence completes, nothing happens.
     public func on(_ event: Event<E>) {
         switch event {

@@ -108,7 +108,7 @@ func indexSections<S: AnimatableSectionModelType>(_ sections: [S]) throws -> [S.
     var indexedSections: [S.Identity : Int] = [:]
     for (i, section) in sections.enumerated() {
         guard indexedSections[section.identity] == nil else {
-            #if DEBUG
+            #if DIALOG_RX_DEBUG
                 if indexedSections[section.identity] != nil {
                     print("Section \(section) has already been indexed at \(indexedSections[section.identity]!)")
                 }
@@ -117,7 +117,7 @@ func indexSections<S: AnimatableSectionModelType>(_ sections: [S]) throws -> [S.
         }
         indexedSections[section.identity] = i
     }
-    
+
     return indexedSections
 }
 
@@ -126,14 +126,14 @@ func indexSectionItems<S: AnimatableSectionModelType>(_ sections: [S]) throws ->
     for i in 0 ..< sections.count {
         totalItems += sections[i].items.count
     }
-    
+
     // let's make sure it's enough
     var indexedItems: [S.Item.Identity : (Int, Int)] = Dictionary(minimumCapacity: totalItems * 3)
-    
+
     for i in 0 ..< sections.count {
         for (j, item) in sections[i].items.enumerated() {
             guard indexedItems[item.identity] == nil else {
-                #if DEBUG
+                #if DIALOG_RX_DEBUG
                     if indexedItems[item.identity] != nil {
                         print("Item \(item) has already been indexed at \(indexedItems[item.identity]!)" )
                     }
@@ -143,7 +143,7 @@ func indexSectionItems<S: AnimatableSectionModelType>(_ sections: [S]) throws ->
             indexedItems[item.identity] = (i, j)
         }
     }
-    
+
     return indexedItems
 }
 
@@ -320,7 +320,7 @@ struct CommandGenerator<S: AnimatableSectionModelType> {
             initialSectionData: initialSectionData,
             finalSectionData: finalSectionData
         )
-        
+
         return CommandGenerator<S>(
             initialSections: initialSections,
             finalSections: finalSections,
@@ -518,7 +518,7 @@ struct CommandGenerator<S: AnimatableSectionModelType> {
                 _ = finalSectionData[i].event == .inserted
             }
         }
-        
+
         return (initialSectionData, finalSectionData)
     }
 
@@ -610,7 +610,7 @@ struct CommandGenerator<S: AnimatableSectionModelType> {
         // sections should be in place, but items should be original without deleted ones
         let sectionsAfterChange: [S] = try self.finalSections.enumerated().map { i, s -> S in
             let event = self.finalSectionData[i].event
-            
+
             if event == .inserted {
                 // it's already set up
                 return s
@@ -618,7 +618,7 @@ struct CommandGenerator<S: AnimatableSectionModelType> {
             else if event == .moved || event == .movedAutomatically {
                 let originalSectionIndex = try finalSectionData[i].moveIndex.unwrap()
                 let originalSection = initialSections[originalSectionIndex]
-                
+
                 var items: [S.Item] = []
                 for (j, _) in originalSection.items.enumerated() {
                     let initialData = self.initialItemData[originalSectionIndex][j]
@@ -634,7 +634,7 @@ struct CommandGenerator<S: AnimatableSectionModelType> {
 
                     items.append(self.finalSections[finalIndex.sectionIndex].items[finalIndex.itemIndex])
                 }
-                
+
                 let modifiedSection = try S(safeOriginal: s, safeItems: items)
 
                 return modifiedSection
@@ -660,16 +660,16 @@ struct CommandGenerator<S: AnimatableSectionModelType> {
         // 3rd stage
         for i in 0 ..< finalSections.count {
             let finalSection = finalSections[i]
-            
+
             let sectionEvent = finalSectionData[i].event
             // new and deleted sections cause reload automatically
             if sectionEvent != .moved && sectionEvent != .movedAutomatically {
                 continue
             }
-            
+
             for j in 0 ..< finalSection.items.count {
                 let currentItemEvent = finalItemData[i][j].event
-                
+
                 try rxPrecondition(currentItemEvent != .untouched, "Current event is not untouched")
 
                 let event = finalItemData[i][j].event

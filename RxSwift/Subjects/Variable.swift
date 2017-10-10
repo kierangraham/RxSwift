@@ -13,15 +13,15 @@
 public final class Variable<Element> {
 
     public typealias E = Element
-    
+
     private let _subject: BehaviorSubject<Element>
-    
+
     private var _lock = SpinLock()
 
     // state
     private var _value: E
 
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         fileprivate let _synchronizationTracker = SynchronizationTracker()
     #endif
 
@@ -36,7 +36,7 @@ public final class Variable<Element> {
             return _value
         }
         set(newValue) {
-            #if DEBUG
+            #if DIALOG_RX_DEBUG
                 _synchronizationTracker.register(synchronizationErrorMessage: .variable)
                 defer { _synchronizationTracker.unregister() }
             #endif
@@ -47,7 +47,7 @@ public final class Variable<Element> {
             _subject.on(.next(newValue))
         }
     }
-    
+
     /// Initializes variable with initial value.
     ///
     /// - parameter value: Initial variable value.
@@ -55,7 +55,7 @@ public final class Variable<Element> {
         _value = value
         _subject = BehaviorSubject(value: value)
     }
-    
+
     /// - returns: Canonical interface for push style sequence
     public func asObservable() -> Observable<E> {
         return _subject

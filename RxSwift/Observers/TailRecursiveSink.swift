@@ -11,7 +11,7 @@ enum TailRecursiveSinkCommand {
     case dispose
 }
 
-#if DEBUG || TRACE_RESOURCES
+#if DIALOG_RX_DEBUG || TRACE_RESOURCES
     public var maxTailRecursiveSinkStackSize = 0
 #endif
 
@@ -74,13 +74,13 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
             guard let (g, left) = _generators.last else {
                 break
             }
-            
+
             if _isDisposed {
                 return
             }
 
             _generators.removeLast()
-            
+
             var e = g
 
             guard let nextCandidate = e.next()?.asObservable() else {
@@ -109,7 +109,7 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
 
             if let nextGenerator = nextGenerator {
                 _generators.append(nextGenerator)
-                #if DEBUG || TRACE_RESOURCES
+                #if DIALOG_RX_DEBUG || TRACE_RESOURCES
                     if maxTailRecursiveSinkStackSize < _generators.count {
                         maxTailRecursiveSinkStackSize = _generators.count
                     }
@@ -141,10 +141,10 @@ class TailRecursiveSink<S: Sequence, O: ObserverType>
 
     override func dispose() {
         super.dispose()
-        
+
         _subscription.dispose()
         _gate.dispose()
-        
+
         schedule(.dispose)
     }
 }

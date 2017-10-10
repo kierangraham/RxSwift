@@ -19,7 +19,7 @@ public final class BehaviorSubject<Element>
 
     typealias Observers = AnyObserver<Element>.s
     typealias DisposeKey = Observers.KeyType
-    
+
     /// Indicates whether the subject has any observers
     public var hasObservers: Bool {
         _lock.lock()
@@ -27,16 +27,16 @@ public final class BehaviorSubject<Element>
         _lock.unlock()
         return value
     }
-    
+
     let _lock = RecursiveLock()
-    
+
     // state
     private var _isDisposed = false
     private var _element: Element
     private var _observers = Observers()
     private var _stoppedEvent: Event<Element>?
 
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         fileprivate let _synchronizationTracker = SynchronizationTracker()
     #endif
 
@@ -44,7 +44,7 @@ public final class BehaviorSubject<Element>
     public var isDisposed: Bool {
         return _isDisposed
     }
- 
+
     /// Initializes a new instance of the subject that caches its last value and starts with the specified value.
     ///
     /// - parameter value: Initial value sent to observers when no other value has been received by the subject yet.
@@ -55,7 +55,7 @@ public final class BehaviorSubject<Element>
             _ = Resources.incrementTotal()
         #endif
     }
-    
+
     /// Gets the current value or throws an error.
     ///
     /// - returns: Latest value.
@@ -64,7 +64,7 @@ public final class BehaviorSubject<Element>
             if _isDisposed {
                 throw RxError.disposed(object: self)
             }
-            
+
             if let error = _stoppedEvent?.error {
                 // intentionally throw exception
                 throw error
@@ -74,12 +74,12 @@ public final class BehaviorSubject<Element>
             }
         //}
     }
-    
+
     /// Notifies all subscribed observers about next event.
     ///
     /// - parameter event: Event to send to the observers.
     public func on(_ event: Event<E>) {
-        #if DEBUG
+        #if DIALOG_RX_DEBUG
             _synchronizationTracker.register(synchronizationErrorMessage: .default)
             defer { _synchronizationTracker.unregister() }
         #endif
@@ -91,17 +91,17 @@ public final class BehaviorSubject<Element>
         if _stoppedEvent != nil || _isDisposed {
             return Observers()
         }
-        
+
         switch event {
         case .next(let element):
             _element = element
         case .error, .completed:
             _stoppedEvent = event
         }
-        
+
         return _observers
     }
-    
+
     /// Subscribes an observer to the subject.
     ///
     /// - parameter observer: Observer to subscribe to the subject.
@@ -118,15 +118,15 @@ public final class BehaviorSubject<Element>
             observer.on(.error(RxError.disposed(object: self)))
             return Disposables.create()
         }
-        
+
         if let stoppedEvent = _stoppedEvent {
             observer.on(stoppedEvent)
             return Disposables.create()
         }
-        
+
         let key = _observers.insert(observer.on)
         observer.on(.next(_element))
-    
+
         return SubscriptionDisposable(owner: self, key: key)
     }
 

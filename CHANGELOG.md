@@ -109,7 +109,7 @@ All notable changes to this project will be documented in this file.
 
 #### Anomalies
 
-* Fixes misspelled `Completeable` to `Completable`. #1134 
+* Fixes misspelled `Completeable` to `Completable`. #1134
 
 ## [3.3.0](https://github.com/ReactiveX/RxSwift/releases/tag/3.3.0) (Xcode 8 / Swift 3.0 compatible)
 
@@ -159,12 +159,12 @@ All notable changes to this project will be documented in this file.
 * Adds [`ifEmpty(default:)`]((http://reactivex.io/documentation/operators/defaultifempty.html)) operator
 * Adds `Disposable` extension `disposed(by:)` equivalent to `addDisposableTo` that is meant to replace it in future 4.0 version.
 * Consolidates atomic operations on Linux and Darwin platform.
-* Adds DEBUG mode concurrent asserts for `Variable` and `Observable.create`.
-* Adds DEBUG mode concurrent asserts for `Sink`.
+* Adds DIALOG_RX_DEBUG mode concurrent asserts for `Variable` and `Observable.create`.
+* Adds DIALOG_RX_DEBUG mode concurrent asserts for `Sink`.
 * Small performance optimizations for subjects.
 * Adaptations for Xcode 8.3 beta.
 * Adds `numberOfPages` to `UIPageControl`.
-* Adds additional resources cleanup unit tests for cases where operators are used without `DisposeBag`s. 
+* Adds additional resources cleanup unit tests for cases where operators are used without `DisposeBag`s.
 * Chroes:
     * Adds `final` keyword wherever applicable.
     * Remove unnecessary `import Foundation` statements.
@@ -187,8 +187,8 @@ All notable changes to this project will be documented in this file.
 * Improves `UIBindingObserver` by tolerating binding from non main dispatch queue. In case binding is attempted
   from non main dispatch queue it will be automagically dispathed async to main queue.
 * Makes control property naming consistent for `UIDatePicker`, `UISearchBar`, `UISegmentedControl`, `UISwitch`, `UITextField`, `UITextView` (`value` property + value alias name).
-* Adds missing extension to `UIScrollView`. 
-    * `didScroll` 
+* Adds missing extension to `UIScrollView`.
+    * `didScroll`
     * `didZoom`
     * `didEndDecelerating`
     * `didEndDragging`
@@ -201,7 +201,7 @@ All notable changes to this project will be documented in this file.
 * Adds `UITabBarController` extensions
     * `willBeginCustomizing`
     * `willEndCustomizing`
-    * `didEndCustomizing` 
+    * `didEndCustomizing`
     * `didSelect`
 * Adds `UIBarButtonItem` extensions
     * `title`
@@ -230,7 +230,7 @@ All notable changes to this project will be documented in this file.
     ...
     also ...
     * since `rx.text` has now type `String?` to be consistent with UIKit, in case `String` is needed
-    there is `rx.text.orEmpty` that has `String` type.   
+    there is `rx.text.orEmpty` that has `String` type.
 * Renames `title(controlState:)` on `UIButton` to `title(for:)`.
 * All data structures are now internal (`Bag`, `Queue`, `PriorityQueue` ...)
 * Improves performance of `Bag`.
@@ -276,7 +276,7 @@ let text: Observable<String> = Observable.just("")
 
 // Previously `map { $0 }` was needed because of mismatch betweeen sequence `String` type and `String?` type
 // on binding `rx.text` observer.
-text.bindTo(label.rx.text)  
+text.bindTo(label.rx.text)
    .disposed(by: disposeBag)
 
 ...

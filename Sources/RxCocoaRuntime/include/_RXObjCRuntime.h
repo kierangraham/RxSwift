@@ -23,8 +23,8 @@
  In case this value is set to `YES`, after runtime race is detected, `abort()` will be called.
  Otherwise, only error will be reported using normal error reporting mechanism.
 
- In `DEBUG` mode `abort` will be always called in case race is detected.
- 
+ In `DIALOG_RX_DEBUG` mode `abort` will be always called in case race is detected.
+
  Races can't happen in case this is the only library modifying ObjC runtime, but in case there are multiple libraries
  changing ObjC runtime, race conditions can occur because there is no way to synchronize multiple libraries unaware of
  each other.

@@ -38,7 +38,7 @@ public final class AsyncSubject<Element>
     }
     private var _lastElement: Element?
 
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         fileprivate let _synchronizationTracker = SynchronizationTracker()
     #endif
 
@@ -55,7 +55,7 @@ public final class AsyncSubject<Element>
     ///
     /// - parameter event: Event to send to the observers.
     public func on(_ event: Event<E>) {
-        #if DEBUG
+        #if DIALOG_RX_DEBUG
             _synchronizationTracker.register(synchronizationErrorMessage: .default)
             defer { _synchronizationTracker.unregister() }
         #endif
@@ -136,11 +136,11 @@ public final class AsyncSubject<Element>
         _lock.lock(); defer { _lock.unlock() }
         _synchronized_unsubscribe(disposeKey)
     }
-    
+
     func _synchronized_unsubscribe(_ disposeKey: DisposeKey) {
         _ = _observers.removeKey(disposeKey)
     }
-    
+
     /// Returns observer interface for subject.
     public func asObserver() -> AsyncSubject<Element> {
         return self

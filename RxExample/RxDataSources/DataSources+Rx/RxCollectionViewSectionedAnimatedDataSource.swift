@@ -14,7 +14,7 @@ import RxCocoa
 #endif
 
 /*
- This is commented becuse collection view has bugs when doing animated updates. 
+ This is commented becuse collection view has bugs when doing animated updates.
  Take a look at randomized sections.
 */
 open class RxCollectionViewSectionedAnimatedDataSource<S: AnimatableSectionModelType>
@@ -22,7 +22,7 @@ open class RxCollectionViewSectionedAnimatedDataSource<S: AnimatableSectionModel
     , RxCollectionViewDataSourceType {
     public typealias Element = [S]
     public var animationConfiguration = AnimationConfiguration()
-    
+
     // For some inexplicable reason, when doing animated updates first time
     // it crashes. Still need to figure out that one.
     var dataSet = false
@@ -66,7 +66,7 @@ open class RxCollectionViewSectionedAnimatedDataSource<S: AnimatableSectionModel
                 }
             }
             catch let e {
-                #if DEBUG
+                #if DIALOG_RX_DEBUG
                     print("Error while binding data animated: \(e)\nFallback to normal `reloadData` behavior.")
                     rxDebugFatalError(e)
                 #endif
@@ -78,7 +78,7 @@ open class RxCollectionViewSectionedAnimatedDataSource<S: AnimatableSectionModel
 
     open func collectionView(_ collectionView: UICollectionView, observedEvent: Event<Element>) {
         UIBindingObserver(UIElement: self) { dataSource, newSections in
-            #if DEBUG
+            #if DIALOG_RX_DEBUG
                 self._dataSourceBound = true
             #endif
             if !self.dataSet {

@@ -43,7 +43,7 @@ func rxFatalError(_ lastMessage: @autoclosure () -> String, file: StaticString =
 }
 
 func rxFatalErrorInDebug(_ lastMessage: @autoclosure () -> String, file: StaticString = #file, line: UInt = #line) {
-    #if DEBUG
+    #if DIALOG_RX_DEBUG
         fatalError(lastMessage(), file: file, line: line)
     #else
         print("\(file):\(line): \(lastMessage())")
@@ -66,7 +66,7 @@ func decrementChecked(_ i: inout Int) throws -> Int {
     return i
 }
 
-#if DEBUG
+#if DIALOG_RX_DEBUG
     import class Foundation.Thread
     final class SynchronizationTracker {
         private let _lock = RecursiveLock()
@@ -85,7 +85,7 @@ func decrementChecked(_ i: inout Int) throws -> Int {
                 print(message)
             #endif
         }
-        
+
         func register(synchronizationErrorMessage: SychronizationErrorMessages) {
             _lock.lock(); defer { _lock.unlock() }
             let pointer = Unmanaged.passUnretained(Thread.current).toOpaque()
@@ -104,7 +104,7 @@ func decrementChecked(_ i: inout Int) throws -> Int {
                     "    or by enqueing sequence events in some other way.\n"
                 )
             }
-            
+
             _threads[pointer] = count
 
             if _threads.count > 1 {

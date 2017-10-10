@@ -48,7 +48,7 @@ public class WikipediaSearchCell: UITableViewCell {
                 .drive(self.imagesOutlet.rx.items(cellIdentifier: "ImageCell", cellType: CollectionViewImageCell.self)) { [weak self] (_, url, cell) in
                     cell.downloadableImage = self?.imageService.imageFromURL(url, reachabilityService: reachabilityService) ?? Observable.empty()
 
-                    #if DEBUG
+                    #if DIALOG_RX_DEBUG
                         //cell.installHackBecauseOfAutomationLeaksOnIOS10(firstViewThatDoesntLeak: self!.superview!.superview!)
                     #endif
                 }
@@ -56,7 +56,7 @@ public class WikipediaSearchCell: UITableViewCell {
 
             self.disposeBag = disposeBag
 
-            #if DEBUG
+            #if DIALOG_RX_DEBUG
                 self.installHackBecauseOfAutomationLeaksOnIOS10(firstViewThatDoesntLeak: self.superview!.superview!)
             #endif
         }
